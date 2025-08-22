@@ -1,61 +1,67 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel 12 Admin Template
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![PHP](https://img.shields.io/badge/php-8.2+-blue.svg)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/laravel-12-red.svg)](https://laravel.com/)
 
-## About Laravel
+## Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Laravel 12 Admin Template** is a professional boilerplate designed for building scalable, maintainable, and production-ready web applications with an admin dashboard. This repository integrates a pre-built admin interface, fully configured Blade and Vue 3 components, authentication scaffolding, and development-ready configurations. It serves as a starting point for developers who want to accelerate project setup without compromising code quality or maintainability.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+This template is ideal for developers aiming to adhere to **industry-standard coding practices**, **conventional commits**, and **clean Git workflows** suitable for both solo and team projects.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Key Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Laravel 12 ready and fully configured
+- Blade templating + Vue 3 components for reactive UI
+- Pre-built admin dashboard with sample widgets and layout
+- Authentication scaffolding (login, registration, password reset)
+- Predefined routing and controller structure for rapid development
+- Integration-ready for databases: MySQL / MariaDB (Eloquent ORM)
+- Conventional Commit-ready workflow
+- Easy to extend and integrate with additional modules
+- Clean directory structure for maintainability
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Technology Stack
 
-## Laravel Sponsors
+| Layer | Technology / Tool |
+|-------|------------------|
+| Backend | PHP 8.2+, Laravel 12 |
+| Frontend | Blade, Vue.js 3, Tailwind CSS |
+| Database | MySQL / MariaDB, Eloquent ORM |
+| Asset Management | Vite, npm, Laravel Mix (optional) |
+| Testing | PHPUnit, Laravel Test Utilities |
+| Code Quality | PHP-CS-Fixer, ESLint, Prettier |
+| Dev Tools | Composer, npm/yarn, Git |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## Installation & Setup
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Follow these steps to get the project running locally:
 
-## Contributing
+```bash
+# Clone the repository
+git clone https://github.com/EasyToBuildWithKane/laravel-admin-template.git
+cd laravel-12-template-admin
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Install PHP dependencies
+composer install
 
-## Code of Conduct
+# Copy environment file and generate application key
+cp .env.example .env
+php artisan key:generate
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Install Node dependencies & build frontend assets
+npm install
+npm run dev
 
-## Security Vulnerabilities
+# Run database migrations
+php artisan migrate
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Optional: seed a demo admin user
+php artisan db:seed
