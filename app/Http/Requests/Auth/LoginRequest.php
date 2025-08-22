@@ -5,61 +5,92 @@ namespace App\Http\Requests\Auth;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class LoginRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+    protected int $maxAttempts = 3;
+
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'login' => ['required', 'string', 'max:50', 'min:4'],
             'password' => ['required', 'string'],
         ];
     }
 
-    /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
+    public function messages(): array
+    {
+        return [
+            'login.required' => 'Vui lòng nhập thông tin tài khoản.',
+            'login.max' => 'Tài khoản không được nhập quá 50 kí tự.',
+            'login.min' => 'Tài khoản không được nhập dưới 4 kí tự',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+        ];
+    }
+
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        $user = User::where('email', $this->login)
+            ->orWhere('name', $this->login)
+            ->orWhere('phone', $this->login)
+            ->first();
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
+        if (!$user) {
+            $this->incrementRateLimit();
+            $this->throwWithAttempts('Vui Lòng Kiểm Tra Thông Tin Đăng Nhập.');
         }
 
+        if ($user->is_delete == 1 || $user->is_active !== 'active') {
+            $this->incrementRateLimit();
+            $this->throwWithAttempts('Tài khoản của bạn đã bị khóa hoặc không hoạt động.');
+        }
+
+        if (!Hash::check($this->password, $user->password)) {
+            $this->incrementRateLimit();
+            $this->throwWithAttempts('Mật khẩu không chính xác.');
+        }
+
+        Auth::login($user, $this->boolean('remember'));
         RateLimiter::clear($this->throttleKey());
     }
 
-    /**
-     * Ensure the login request is not rate limited.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
+    protected function incrementRateLimit(): void
+    {
+        RateLimiter::hit($this->throttleKey());
+    }
+
+    protected function throwWithAttempts(string $message): void
+    {
+        $attemptsLeft = $this->maxAttempts - RateLimiter::attempts($this->throttleKey());
+        $attemptsLeft = max(0, $attemptsLeft);
+
+        if ($attemptsLeft > 0) {
+            throw ValidationException::withMessages([
+                'login' => "$message Bạn còn $attemptsLeft lượt thử."
+            ]);
+        }
+
+        throw ValidationException::withMessages([
+            'throttle' => RateLimiter::availableIn($this->throttleKey()),
+        ]);
+    }
+
+
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), $this->maxAttempts)) {
             return;
         }
 
@@ -68,18 +99,19 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
+            'throttle' => $seconds
         ]);
     }
 
-    /**
-     * Get the rate limiting throttle key for the request.
-     */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->input('login')) . '|' . $this->ip());
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'login' => trim($this->login),
+        ]);
     }
 }
