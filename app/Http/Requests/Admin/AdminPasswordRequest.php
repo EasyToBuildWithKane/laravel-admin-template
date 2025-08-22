@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class AdminPasswordRequest extends FormRequest
 {
@@ -23,11 +22,11 @@ class AdminPasswordRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'old_password.required' => 'Vui lòng nhập mật khẩu cũ.',
-            'new_password.required' => 'Vui lòng nhập mật khẩu mới.',
-            'new_password.min' => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
-            'new_password.confirmed' => 'Xác nhận mật khẩu không khớp.',
-            'new_password.different' => 'Mật khẩu mới phải khác mật khẩu cũ.',
+            'old_password.required' => 'Please enter your current password.',
+            'new_password.required' => 'Please enter a new password.',
+            'new_password.min' => 'The new password must be at least 6 characters.',
+            'new_password.confirmed' => 'Password confirmation does not match.',
+            'new_password.different' => 'The new password must be different from the old one.',
         ];
     }
 }
