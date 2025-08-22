@@ -29,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->prepend(HandleCors::class);
         $middleware->alias([
+            'role' => AdminRoleMiddleware::class,
 
         ]);
 
